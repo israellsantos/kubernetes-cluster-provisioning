@@ -1,0 +1,101 @@
+- hosts: all
+  become: yes
+  tasks:
+   - name: disable SELinux
+     command: setenforce 0
+     ignore_errors: yes
+   - name: disable SELinux on reboot
+     selinux:
+       policy: targeted
+       state: permissive
+
+   - name: modprobe br_netfilter
+     modprobe:
+       name: br_netfilter
+       state: present
+
+   - name: ensure net.bridge.bridge-nf-call-iptables is set to 1
+     sysctl:
+      name: net.bridge.bridge-nf-call-iptables
+      value: 1
+      state: present
+   - name: ensure net.bridge.bridge-nf-call-ip6tables is set to 1
+     sysctl:
+      name: net.bridge.bridge-nf-call-ip6tables
+      value: 1
+      state: present
+
+#   - name: ensure net.ipv6.conf.all.disable_ipv6 is set to 1
+#     sysctl:
+#      name: net.ipv6.conf.all.disable_ipv6
+#      value: 1
+#      state: present
+#   - name: ensure net.ipv6.conf.default.disable_ipv6 is set to 1
+#     sysctl:
+#      name: net.ipv6.conf.default.disable_ipv6
+#      value: 1
+#      state: present
+#   - name: ensure net.ipv6.conf.lo.disable_ipv6 is set to 1
+#     sysctl:
+#      name: net.ipv6.conf.lo.disable_ipv6
+#      value: 1
+#      state: present      
+
+   - name: disable firewalld
+     service:
+       name: firewalld
+       enabled: no
+       state: stopped
+
+   - name: add Kubernetes' YUM repository
+     yum_repository:
+      name: Kubernetes
+      description: Kubernetes YUM repository
+      baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+      gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+      gpgcheck: yes
+
+   - name: Add Docker repo
+     get_url:
+       url: https://download.docker.com/linux/centos/docker-ce.repo
+       dest: /etc/yum.repos.d/docker-ce.repo
+     become: yes
+
+   - name: install Docker
+     yum:
+       name: docker-ce
+       state: present
+       update_cache: true      
+
+   - name: install kubeadm
+     yum:
+        name: kubeadm
+        state: present
+        update_cache: true        
+
+   - name: install kubelet
+     yum:
+        name: kubelet
+        state: present
+        update_cache: true
+
+   - name: start Docker
+     service:
+       name: docker
+       enabled: yes
+       state: started   
+
+   - name: start kubelet
+     service:
+       name: kubelet
+       enabled: yes
+       state: started        
+
+- hosts: master
+  become: yes
+  tasks:
+   - name: install kubectl
+     yum:
+        name: kubectl
+        state: present
+        update_cache: true
