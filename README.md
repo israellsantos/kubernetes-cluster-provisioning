@@ -1,9 +1,8 @@
 # Kubernetes Cluster Provisioning - Ansible
 
+Ansible Playbooks para criação de um cluster Kubernetes
 
 ## Playbooks
-
-Ansible Playbooks para criação de um cluster Kubernetes
 
 ```
 hosts.ini = nomes dos hosts e seus papéis (master ou nodes)
@@ -17,6 +16,8 @@ ansible-playbook -i hosts.ini -v dependencies.yaml
 ansible-playbook -i hosts.ini -v master.yaml
 ansible-playbook -i hosts.ini -v nodes.yaml
 ```
+
+No master é criado o usuário kubernetes para usar a ferramenta kubectl
 
 ## Laboratorio Vagrant
 
@@ -40,6 +41,14 @@ Para subir o ambiente basta executar:
 
 ```
 vagrant up
+```
+
+Para logar no master ou nodes, executar:
+
+```
+vagrant ssh master
+vagrant ssh node1
+vagrant ssh node2
 ```
 
 Fontes:
