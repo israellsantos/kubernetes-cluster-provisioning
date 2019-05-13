@@ -17,6 +17,13 @@ ansible-playbook -i hosts.ini -v master.yaml
 ansible-playbook -i hosts.ini -v nodes.yaml
 ```
 
+Opcionais:
+
+```
+ansible-playbook -i hosts.ini -v iscsi.yaml
+ansible-playbook -i hosts.ini -v gluster.yaml
+```
+
 No master é criado o usuário kubernetes para usar a ferramenta kubectl
 
 ## Laboratorio Vagrant

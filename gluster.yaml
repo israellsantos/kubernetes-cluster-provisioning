@@ -1,0 +1,11 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: install gluster dependencies
+      yum:
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - glusterfs
+          - glusterfs-fuse
+          - glusterfs-rdma

@@ -1,0 +1,9 @@
+- hosts: all
+  become: yes
+  tasks:
+  - name: install iscsi-initiator-utils
+    yum:
+      name: iscsi-initiator-utils
+      state: present
+      update_cache: true
+
