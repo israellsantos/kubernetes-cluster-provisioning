@@ -99,3 +99,8 @@
         name: kubectl
         state: present
         update_cache: true
+   - name: install bash-completion
+     yum:
+        name: bash-completion
+        state: present
+        update_cache: true
